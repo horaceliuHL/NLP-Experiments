@@ -114,10 +114,10 @@ def getUnigrams(dict5K, val):
         else:
           resultUnigram[word[j]] = 1
       else:
-        if '<OOV>' in resultUnigram:
-          resultUnigram['<OOV>'] += 1
+        if 'OOV' in resultUnigram:
+          resultUnigram['OOV'] += 1
         else:
-          resultUnigram['<OOV>'] = 1
+          resultUnigram['OOV'] = 1
   # sorted_commonWords = dict(sorted(resultUnigram.items(), key=lambda item: (item[1]), reverse=True))
   # print(sorted_commonWords)
   return resultUnigram
@@ -166,6 +166,7 @@ def getBigrams(dict5K, val):
             resultBigram['OOV'][word[j+1]] = 1
           else:
             resultBigram['OOV']['OOV'] = 1
+            
   return resultBigram
 
 
@@ -251,8 +252,47 @@ def getTrigrams(dict5K, val, bigramDict):
             else:
               resultTrigram[('OOV', 'OOV')]['OOV'] = 1
 
-
   return resultTrigram
+
+
+## 2.3: Create a method that calculates language model probabilities
+
+def getBigramProbs(uniDict, biDict):
+  tempVocabDict = {}
+  for i in biDict:
+    for j in biDict[i]:
+      if j not in tempVocabDict:
+        tempVocabDict[j] = 1
+  for i in biDict:
+    for j in biDict[i]:
+      checkCount = uniDict['OOV']
+      if i in uniDict:
+        checkCount = uniDict[i]
+      tempProb = (biDict[i][j] + 1) / (checkCount + len(tempVocabDict))
+      biDict[i][j] = tempProb
+  return biDict
+
+def getTrigramProbs(biDictProbs, biDictCounts, triDict):
+  tempVocabDict = {}
+  for i in triDict:
+    for j in triDict[i]:
+      if j not in tempVocabDict:
+        tempVocabDict[j] = 1
+  for i in triDict:
+    for j in triDict[i]:
+      firstWord = i[1]
+      secondWord = j
+      tempProb = biDictProbs[firstWord][secondWord]
+      tempProb1 = (triDict[i][j] + 1) / (biDictCounts[firstWord][secondWord] + len(tempVocabDict))
+      actualProb = (tempProb + tempProb1)/2
+      # if i == ('to', 'process'):
+      #   print((tempProb + (1/len(tempVocabDict)))/2)
+      triDict[i][j] = actualProb
+  return triDict
+
+
+
+
 
 
 ###################################################################################
@@ -292,5 +332,36 @@ if __name__ == "__main__":
       print(0)
   else:
     print(0)
-  
+
+
+  probsOfBigram = getBigramProbs(getUnigrams(top5kDict, val), getBigrams(top5kDict, val))
+  print(probsOfBigram['the']['language'])
+  print(probsOfBigram['OOV']['language'])
+  print(probsOfBigram['to']['process'])
+  probsOfTrigram = getTrigramProbs(getBigramProbs(getUnigrams(top5kDict, val), getBigrams(top5kDict, val)), getBigrams(top5kDict, val), getTrigrams(top5kDict, val, bigramCounts))
+  if ('specific', 'formal') in probsOfTrigram:
+    if 'languages' in probsOfTrigram[('specific', 'formal')]:
+      print(probsOfTrigram[('specific', 'formal')]['languages'])
+    else:
+      print("NOT VALID Wi")
+  else:
+    print("NOT VALID Wi")
+  if ('to', 'process') in probsOfTrigram:
+    # print(probsOfTrigram[('to', 'process')])
+    if 'OOV' in probsOfTrigram[('to', 'process')]:
+      print(probsOfTrigram[('to', 'process')]['OOV'])
+    else:
+      print("NOT VALID Wi")
+  else:
+    print("NOT VALID Wi")
+  if ('specific', 'formal') in probsOfTrigram:
+    if 'event' in probsOfTrigram[('specific', 'formal')]:
+      print(probsOfTrigram[('specific', 'formal')]['event'])
+    else:
+      print("NOT VALID Wi")
+  else:
+    print("NOT VALID Wi")
+
+
+
 
