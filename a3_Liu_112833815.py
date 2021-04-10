@@ -82,8 +82,8 @@ def getTop5k(val):
     listOfWords = val["context"][i]
     for j in range(len(listOfWords)):
       listOfWords[j] = listOfWords[j].lower()
-      if listOfWords[j] == '<s>' or listOfWords[j] == '</s>':
-        continue
+      # if listOfWords[j] == '<s>' or listOfWords[j] == '</s>':
+      #   continue
       if listOfWords[j] in commonWords:
         commonWords[listOfWords[j]] += 1
       else:
@@ -93,9 +93,6 @@ def getTop5k(val):
   # sorted_commonWords = dict(sorted(commonWords.items(), key=lambda item: (-item[1], item[0]))[:5000])
   # sorted_commonWords = dict(sorted(commonWords.items(), key=lambda item: (item[1]), reverse=True)[:5000])
 
-  # keys = list(sorted_commonWords.keys())
-  # top5kCommon = keys[0: 5000]
-  # return top5kCommon
   return sorted_commonWords
 
 
@@ -106,8 +103,8 @@ def getUnigrams(dict5K, val):
   for i in range(len(val["context"])):
     word = val["context"][i]
     for j in range(len(word)):
-      if word[j] == '<s>' or word[j] == '</s>':
-        continue
+      # if word[j] == '<s>' or word[j] == '</s>':
+      #   continue
       if word[j] in dict5K:
         if word[j] in resultUnigram:
           resultUnigram[word[j]] += 1
@@ -118,8 +115,6 @@ def getUnigrams(dict5K, val):
           resultUnigram['OOV'] += 1
         else:
           resultUnigram['OOV'] = 1
-  # sorted_commonWords = dict(sorted(resultUnigram.items(), key=lambda item: (item[1]), reverse=True))
-  # print(sorted_commonWords)
   return resultUnigram
 
 
@@ -128,8 +123,8 @@ def getBigrams(dict5K, val):
   for i in range(len(val["context"])):
     word = val["context"][i]
     for j in range(len(word) - 1):
-      if word[j] == '<s>' or word[j] == '</s>':
-        continue
+      # if word[j] == '<s>' or word[j] == '</s>':
+      #   continue
       if word[j] in dict5K:
         if word[j] in resultBigram:
           if word[j+1] in dict5K:
@@ -175,8 +170,8 @@ def getTrigrams(dict5K, val, bigramDict):
   for i in range(len(val["context"])):
     word = val["context"][i]
     for j in range(len(word) - 2):
-      if word[j] == '<s>' or word[j] == '</s>':
-        continue
+      # if word[j] == '<s>' or word[j] == '</s>':
+      #   continue
       if word[j] in bigramDict:
         if word[j+1] in bigramDict[word[j]]:
           if (word[j], word[j+1]) in resultTrigram:
@@ -285,83 +280,182 @@ def getTrigramProbs(biDictProbs, biDictCounts, triDict):
       tempProb = biDictProbs[firstWord][secondWord]
       tempProb1 = (triDict[i][j] + 1) / (biDictCounts[firstWord][secondWord] + len(tempVocabDict))
       actualProb = (tempProb + tempProb1)/2
-      # if i == ('to', 'process'):
-      #   print((tempProb + (1/len(tempVocabDict)))/2)
       triDict[i][j] = actualProb
   return triDict
 
 
+## 2.4: Create a method to generate language
 
-
+def generateLanguage(wordList, biDict, triDict):
+  length = len(wordList)
+  if length == 1:
+    if wordList[0] in biDict:
+      tempKeys = list(biDict[wordList[0]].keys())
+      tempValues = list(biDict[wordList[0]].values())
+      chosenWord = np.random.choice(tempKeys, p=tempValues)
+      wordList.append(chosenWord)
+    else:
+      tempKeys = list(biDict['OOV'].keys())
+      tempValues = list(biDict['OOV'].values())
+      chosenWord = np.random.choice(tempKeys, p=tempValues)
+      wordList.append(chosenWord)
+  
+  while len(wordList) < 32:
+    if wordList[len(wordList) - 1] == '</s>':
+      break
+    previousTwoTuple = (wordList[len(wordList) - 2], wordList[len(wordList) - 1])
+    tempKeys = list(triDict[previousTwoTuple].keys())
+    tempValues = list(triDict[previousTwoTuple].values())
+    chosenWord = np.random.choice(tempKeys, p=tempValues)
+    wordList.append(chosenWord)
+  
+  wordList = ' '.join(wordList)
+  return wordList
+  
 
 
 ###################################################################################
 ## MAIN
 
 if __name__ == "__main__":
+
+  #2.1
   indicesOfHead = []
   val = readData("onesec_train.tsv")
   top5kDict = getTop5k(val)
+
+
+  #2.2
   unigramCounts = getUnigrams(top5kDict, val)
   bigramCounts = getBigrams(top5kDict, val)
   trigramCounts = getTrigrams(top5kDict, val, bigramCounts)
-  print(unigramCounts['language'])
-  print(unigramCounts['the'])
-  print(unigramCounts['formal'])
-  print(bigramCounts['the']['language'])
-  print(bigramCounts['OOV']['language'])
-  print(bigramCounts['to']['process'])
+  print('CHECKPOINT 2.2 - counts')
+  print('\t1 grams:')
+  print('\t\t(\'language\',): ' + str(unigramCounts['language']))
+  print('\t\t(\'the\',): ' + str(unigramCounts['the']))
+  print('\t\t(\'formal\',): ' + str(unigramCounts['formal']))
+  print('\t2 grams:')
+  print('\t\t(\'the\', \'language\'): ' + str(bigramCounts['the']['language']))
+  print('\t\t(\'<OOV>\', \'language\'): ' + str(bigramCounts['OOV']['language']))
+  print('\t\t(\'to\', \'process\'): ' + str(bigramCounts['to']['process']))
+  print('\t3 grams:')
   if ('specific', 'formal') in trigramCounts:
     if 'languages' in trigramCounts[('specific', 'formal')]:
-      print(trigramCounts[('specific', 'formal')]['languages'])
+      print('\t\t(\'specific\', \'formal\', \'languages\'): ' + str(trigramCounts[('specific', 'formal')]['languages']))
     else:
-      print(0)
+      print('\t\t(\'specific\', \'formal\', \'languages\'): ' + str(0))
   else:
-    print(0)
+    print('\t\t(\'specific\', \'formal\', \'languages\'): ' + str(0))
   if ('to', 'process') in trigramCounts:
     if 'OOV' in trigramCounts[('to', 'process')]:
-      print(trigramCounts[('to', 'process')]['OOV'])
+      print('\t\t(\'to\', \'process\', \'<OOV>\'): ' + str(trigramCounts[('to', 'process')]['OOV']))
     else:
-      print(0)
+      print('\t\t(\'to\', \'process\', \'<OOV>\'): ' + str(0))
   else:
-    print(0)
+    print('\t\t(\'to\', \'process\', \'<OOV>\'): ' + str(0))
   if ('specific', 'formal') in trigramCounts:
     if 'event' in trigramCounts[('specific', 'formal')]:
-      print(trigramCounts[('specific', 'formal')]['event'])
+      print('\t\t(\'specific\', \'formal\', \'event\'): ' + str(trigramCounts[('specific', 'formal')]['event']))
     else:
-      print(0)
+      print('\t\t(\'specific\', \'formal\', \'event\'): ' + str(0))
   else:
-    print(0)
+    print('\t\t(\'specific\', \'formal\', \'event\'): ' + str(0))
 
 
+  #2.3
   probsOfBigram = getBigramProbs(getUnigrams(top5kDict, val), getBigrams(top5kDict, val))
-  print(probsOfBigram['the']['language'])
-  print(probsOfBigram['OOV']['language'])
-  print(probsOfBigram['to']['process'])
+  print('\nCHECKPOINT 2.3 - Probs with addone')
+  print('\t2 grams:')
+  print('\t\t(\'the\', \'language\'): ' + str(probsOfBigram['the']['language']))
+  print('\t\t(\'<OOV>\', \'language\'): ' + str(probsOfBigram['OOV']['language']))
+  print('\t\t(\'to\', \'process\'): ' + str(probsOfBigram['to']['process']))
   probsOfTrigram = getTrigramProbs(getBigramProbs(getUnigrams(top5kDict, val), getBigrams(top5kDict, val)), getBigrams(top5kDict, val), getTrigrams(top5kDict, val, bigramCounts))
+  print('\t3 grams:')
   if ('specific', 'formal') in probsOfTrigram:
     if 'languages' in probsOfTrigram[('specific', 'formal')]:
-      print(probsOfTrigram[('specific', 'formal')]['languages'])
+      print('\t\t(\'specific\', \'formal\', \'languages\'): ' + str(probsOfTrigram[('specific', 'formal')]['languages']))
     else:
-      print("NOT VALID Wi")
+      print('\t\t(\'specific\', \'formal\', \'languages\'): ' + str("NOT VALID Wi"))
   else:
-    print("NOT VALID Wi")
+    print('\t\t(\'specific\', \'formal\', \'languages\'): ' + str("NOT VALID Wi"))
   if ('to', 'process') in probsOfTrigram:
     # print(probsOfTrigram[('to', 'process')])
     if 'OOV' in probsOfTrigram[('to', 'process')]:
-      print(probsOfTrigram[('to', 'process')]['OOV'])
+      print('\t\t(\'to\', \'process\', \'<OOV>\'): ' + str(probsOfTrigram[('to', 'process')]['OOV']))
     else:
-      print("NOT VALID Wi")
+      print('\t\t(\'to\', \'process\', \'<OOV>\'): ' + str("NOT VALID Wi"))
   else:
-    print("NOT VALID Wi")
+    print('\t\t(\'to\', \'process\', \'<OOV>\'): ' + str("NOT VALID Wi"))
   if ('specific', 'formal') in probsOfTrigram:
     if 'event' in probsOfTrigram[('specific', 'formal')]:
-      print(probsOfTrigram[('specific', 'formal')]['event'])
+      print('\t\t(\'specific\', \'formal\', \'event\'): ' + str(probsOfTrigram[('specific', 'formal')]['event']))
     else:
-      print("NOT VALID Wi")
+      print('\t\t(\'specific\', \'formal\', \'event\'): ' + str("NOT VALID Wi"))
   else:
-    print("NOT VALID Wi")
+    print('\t\t(\'specific\', \'formal\', \'event\'): ' + str("NOT VALID Wi"))
 
 
+  
+  #2.4
+  for i in probsOfBigram:
+    tempKeys = list(probsOfBigram[i].keys())
+    tempValues = list(probsOfBigram[i].values())
+    sumValues = sum(tempValues)
+    for j in range(len(tempValues)):
+      probsOfBigram[i][tempKeys[j]] = tempValues[j]/sumValues
 
+  for i in probsOfTrigram:
+    tempKeys = list(probsOfTrigram[i].keys())
+    tempValues = list(probsOfTrigram[i].values())
+    sumValues = sum(tempValues)
+    for j in range(len(tempValues)):
+      probsOfTrigram[i][tempKeys[j]] = tempValues[j]/sumValues
+
+  # probsOfBigram = getBigramProbs(getUnigrams(top5kDict, val), getBigrams(top5kDict, val))
+  # probsOfTrigram = getTrigramProbs(getBigramProbs(getUnigrams(top5kDict, val), getBigrams(top5kDict, val)), getBigrams(top5kDict, val), getTrigrams(top5kDict, val, bigramCounts))
+
+  print('\nFINAL CHECKPOINT - Generated Language\n')
+  print('PROMPT: <s>')
+  sentencePrompt = ['<s>']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+
+  print('PROMPT: <s> language is')
+  sentencePrompt = ['<s>', 'language', 'is']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>', 'language', 'is']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>', 'language', 'is']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+
+  print('PROMPT: <s> machines')
+  sentencePrompt = ['<s>', 'machines']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>', 'machines']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>', 'machines']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+
+  print('PROMPT: <s> they want to process')
+  sentencePrompt = ['<s>', 'they', 'want', 'to', 'process']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>', 'they', 'want', 'to', 'process']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
+  sentencePrompt = ['<s>', 'they', 'want', 'to', 'process']
+  sentence = generateLanguage(sentencePrompt, probsOfBigram, probsOfTrigram)
+  print('\t' + sentence)
 

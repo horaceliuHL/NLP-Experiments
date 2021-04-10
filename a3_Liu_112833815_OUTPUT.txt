@@ -1,20 +1,42 @@
-760
-3828
-14
-74
-62
-6
-1
-0
-0
-0.008519822787686017
-0.005829015544041451
-0.0011102299762093576
-0.00970267939202337
-0.0002770275245110372
-0.0002770275245110372
-0.002567372838112165
-0.0002770275245110372
-0.0005022743584272496
-NOT VALID Wi
-NOT VALID Wi
+CHECKPOINT 2.2 - counts
+	1 grams:
+		('language',): 760
+		('the',): 3828
+		('formal',): 14
+	2 grams:
+		('the', 'language'): 74
+		('<OOV>', 'language'): 62
+		('to', 'process'): 6
+	3 grams:
+		('specific', 'formal', 'languages'): 1
+		('to', 'process', '<OOV>'): 0
+		('specific', 'formal', 'event'): 0
+
+CHECKPOINT 2.3 - Probs with addone
+	2 grams:
+		('the', 'language'): 0.008495695514272768
+		('<OOV>', 'language'): 0.005814490078449469
+		('to', 'process'): 0.0011058451816745656
+	3 grams:
+		('specific', 'formal', 'languages'): 0.0005001269756578686
+		('to', 'process', '<OOV>'): NOT VALID Wi
+		('specific', 'formal', 'event'): NOT VALID Wi
+
+FINAL CHECKPOINT - Generated Language
+
+PROMPT: <s>
+	<s> critics in the early history of the process . </s>
+	<s> more specifically a plan view is an australian OOV OOV , and are still fundamental in many languages OOV OOV concerning the philosophy of the OOV distinction , OOV testing involves
+	<s> this typically speeds up processes that OOV from process to termination of welfare benefits . </s>
+PROMPT: <s> language is
+	<s> language is . </s>
+	<s> language is to OOV with electrical circuits that involve active electrical components such as test tubes and OOV on OOV and john OOV and hydrogenation . </s>
+	<s> language is the most recognized faces in the OOV , in OOV ( including steam ) during the OOV ) signed . </s>
+PROMPT: <s> machines
+	<s> machines were developed by OOV companies running bullard machines . </s>
+	<s> machines were shipped in 2011 , the OOV system safety processes in the name for the OOV and employees to appeal any OOV , place it into a global system for
+	<s> machines were shipped in 2011 . </s>
+PROMPT: <s> they want to process
+	<s> they want to process . </s>
+	<s> they want to process and the american public in OOV in languages and OOV and two short OOV processes , for example , the river is named wityellibar , with an
+	<s> they want to process information , and all OOV , iroquoian , and continued previous activities in micro process engineering . </s>
