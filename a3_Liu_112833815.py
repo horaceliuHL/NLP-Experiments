@@ -259,12 +259,17 @@ def getBigramProbs(uniDict, biDict):
       if j not in tempVocabDict:
         tempVocabDict[j] = 1
   for i in biDict:
+    flagCheckForOOV = False
     for j in biDict[i]:
       checkCount = uniDict['OOV']
       if i in uniDict:
         checkCount = uniDict[i]
+      if j == 'OOV':
+        flagCheckForOOV = True
       tempProb = (biDict[i][j] + 1) / (checkCount + len(tempVocabDict))
       biDict[i][j] = tempProb
+    if flagCheckForOOV == False:
+      biDict[i]['OOV'] = 1/len(tempVocabDict)
   return biDict
 
 def getTrigramProbs(biDictProbs, biDictCounts, triDict):
@@ -274,13 +279,23 @@ def getTrigramProbs(biDictProbs, biDictCounts, triDict):
       if j not in tempVocabDict:
         tempVocabDict[j] = 1
   for i in triDict:
+    flagCheckForOOV = False
     for j in triDict[i]:
       firstWord = i[1]
       secondWord = j
+      if secondWord == 'OOV':
+        flagCheckForOOV = True
       tempProb = biDictProbs[firstWord][secondWord]
       tempProb1 = (triDict[i][j] + 1) / (biDictCounts[firstWord][secondWord] + len(tempVocabDict))
       actualProb = (tempProb + tempProb1)/2
       triDict[i][j] = actualProb
+    if flagCheckForOOV == False:
+      firstWord = i[1]
+      secondWord = 'OOV'
+      tempProb = biDictProbs[firstWord][secondWord]
+      tempProb1 = 1 / len(tempVocabDict)
+      actualProb = (tempProb + tempProb1)/2
+      triDict[i]['OOV'] = actualProb
   return triDict
 
 
@@ -304,8 +319,15 @@ def generateLanguage(wordList, biDict, triDict):
     if wordList[len(wordList) - 1] == '</s>':
       break
     previousTwoTuple = (wordList[len(wordList) - 2], wordList[len(wordList) - 1])
-    tempKeys = list(triDict[previousTwoTuple].keys())
-    tempValues = list(triDict[previousTwoTuple].values())
+    tempKeys = []
+    tempValues = []
+    if previousTwoTuple not in triDict:
+      previousTwoTuple = wordList[len(wordList) - 1]
+      tempKeys = list(biDict[previousTwoTuple].keys())
+      tempValues = list(biDict[previousTwoTuple].values())
+    else:
+      tempKeys = list(triDict[previousTwoTuple].keys())
+      tempValues = list(triDict[previousTwoTuple].values())
     chosenWord = np.random.choice(tempKeys, p=tempValues)
     wordList.append(chosenWord)
   

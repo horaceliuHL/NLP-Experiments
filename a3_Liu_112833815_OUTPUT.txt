@@ -19,24 +19,24 @@ CHECKPOINT 2.3 - Probs with addone
 		('to', 'process'): 0.0011058451816745656
 	3 grams:
 		('specific', 'formal', 'languages'): 0.0005001269756578686
-		('to', 'process', '<OOV>'): NOT VALID Wi
+		('to', 'process', '<OOV>'): 0.0015037853036456122
 		('specific', 'formal', 'event'): NOT VALID Wi
 
 FINAL CHECKPOINT - Generated Language
 
 PROMPT: <s>
-	<s> critics in the early history of the process . </s>
-	<s> more specifically a plan view is an australian OOV OOV , and are still fundamental in many languages OOV OOV concerning the philosophy of the OOV distinction , OOV testing involves
-	<s> this typically speeds up processes that OOV from process to termination of welfare benefits . </s>
+	<s> activities today ingersoll machine tools , OOV for 1997 . </s>
+	<s> the OOV army , OOV . </s>
+	<s> the language , a view already OOV OOV and the machines . </s>
 PROMPT: <s> language is
-	<s> language is . </s>
-	<s> language is to OOV with electrical circuits that involve active electrical components such as test tubes and OOV on OOV and john OOV and hydrogenation . </s>
-	<s> language is the most recognized faces in the OOV , in OOV ( including steam ) during the OOV ) signed . </s>
+	<s> language is an OOV , and OOV systems engineering OOV OOV ) follows OOV . </s>
+	<s> language is  ai  , OOV howe secured a OOV and OOV , OOV OOV ( ray OOV OOV her name and OOV more OOV process itself fails OOV lacked
+	<s> language is also a OOV OOV OOV , bringing ' OOV ( OOV OOV ( a OOV OOV OOV OOV . </s>
 PROMPT: <s> machines
-	<s> machines were developed by OOV companies running bullard machines . </s>
-	<s> machines were shipped in 2011 , the OOV system safety processes in the name for the OOV and employees to appeal any OOV , place it into a global system for
-	<s> machines were shipped in 2011 . </s>
+	<s> machines are the OOV ) , OOV and the organizational , OOV machines . </s>
+	<s> machines were slowly adopted by OOV to sign slowly and OOV the first machine OOV , including their OOV in over OOV OOV and many machine shops . </s>
+	<s> machines are capable of OOV OOV during the OOV , then searle grants that OOV machines . </s>
 PROMPT: <s> they want to process
+	<s> they want to process . `` </s>
+	<s> they want to process and are OOV ) is an institutional procurement process that OOV and process quality to OOV from μῆχος OOV OOV machine OOV surface on OOV , it
 	<s> they want to process . </s>
-	<s> they want to process and the american public in OOV in languages and OOV and two short OOV processes , for example , the river is named wityellibar , with an
-	<s> they want to process information , and all OOV , iroquoian , and continued previous activities in micro process engineering . </s>
