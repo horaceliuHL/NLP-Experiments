@@ -2,7 +2,6 @@
 # Horace Liu 112833815
 # CSE354, Spring 2021
 ##########################################################
-## a2_Liu_112833815.py
 ## Word Sense Disambiguation
 
 import sys
@@ -12,7 +11,7 @@ import pandas as pd
 import torch
 import torch.nn as nn  #pytorch
 
-sys.stdout = open('a2_Liu_112833815_OUTPUT.txt', 'w', encoding="utf-8")
+sys.stdout = open('wsd.txt', 'w', encoding="utf-8")
 
 ##########################################################
 ## Part 1: Word Sense Disambiguation (WSD) with One-Hot Neighbors
