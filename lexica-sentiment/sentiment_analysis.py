@@ -2,7 +2,6 @@
 # Horace Liu 112833815
 # CSE354, Spring 2021
 ##########################################################
-## a1_Liu_112833815.py
 ## Sentiment Classifier - lexicon-based,
 ##                        logistic regression based
 
@@ -15,7 +14,7 @@ import torch
 import torch.nn as nn  #pytorch
 
 # Comment this line out if you wish to see results on the console
-sys.stdout = open('a1_Liu_112833815_OUTPUT.txt', 'w') # EDIT THIS
+sys.stdout = open('sentiment_analysis.txt', 'w') 
 
 #########################################################
 ## Part 1. Read and tokenize data.
@@ -42,7 +41,6 @@ def tokenize(text):
     text = wordRE.findall(text)
     
     return text
-    #1.1 IMPLEMENT
     #takes in a single string
     #Returns a list tokens from the string according to
     #the restrictions provided in the instructions.
@@ -54,7 +52,6 @@ def tokenize(text):
 ## Part 2. Logistic Regression Classification
 
 #default lexicon
-#DO NOT DELETE ANY WORDS BUT YOU MAY ADD WORDS
 #lexicon is the top 30 most common words from the LIWC2007 lexicon
 lexica = {
     'pos' : ['like', 'love', 'good', 'happy', 'great', 'best', 'better', 'fun', 'hope', 'thank',
@@ -105,7 +102,6 @@ def lexicaScore(lexica, tokens):
     #  a dictionary of frequencies per category (e.g. {'pos': 0.10, 'neg': 0.07} )
 
 def posNegLexClassify(lexicaScores, posName='pos', negName='neg'):
-    #DON'T EDIT EXCEPT thresh
     #Given:
     #  lexicaScores - a dict of frequencies per category
     #  posName, negName - category name for positive and negative category
@@ -129,7 +125,7 @@ def extractMultiHot(tokens, vocab):
     
     return multi_hot
 
-    ##3.1 IMPLEMENT
+    ##3.1
     #Given:
     # tokens -- a list of strings appearing in a given
     # vocab -- the vocabulary tokens to record in the multi hot
@@ -145,7 +141,7 @@ def normalizedLogLoss(ypred, ytrue):
     log_loss *= -1
     return log_loss
 
-    ##3.2 IMPLEMENT
+    ##3.2
     ##Given:
     #  ypred - a vector (torch 1-d tensor) of predictions from the model.
     #          these are probabilities (values between 0 and 1)
@@ -153,7 +149,7 @@ def normalizedLogLoss(ypred, ytrue):
     #Output:
     #  the logloss
 
-## The Logistic Regression Class (do not edit but worth studying)
+## The Logistic Regression Class
 class LogReg(nn.Module):
     def __init__(self, num_feats, learn_rate = 0.01, device = torch.device("cpu") ):
         #DONT EDIT
@@ -161,7 +157,6 @@ class LogReg(nn.Module):
         self.linear = nn.Linear(num_feats+1, 1) #add 1 to features for intercept
 
     def forward(self, X):
-        #DONT EDIT
         #This is where the model itself is defined.
         #For logistic regression the model takes in X and returns
         #a probability (a value between 0 and 1)
@@ -171,11 +166,8 @@ class LogReg(nn.Module):
 
 
 ###################################################################################
-## MAIN - NOTHING BELOW SHOULD BE EDITED
-
 
 if __name__ == "__main__":
-    ##DONT EDIT
 
     ##RUN PART 1: loading data, tokenize:
     print("\nLOADING DATA...")
