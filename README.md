@@ -27,5 +27,6 @@ Contins all code generally pertaining to what I learned in NLP
 - Attention/Multi-head Attention
 - Transformers
 - BERT/GPT/ELMo
+- BLEU
 - NLP Applications
 
